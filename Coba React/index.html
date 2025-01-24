@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const container = document.getElementById("root");
+      const root = ReactDOM.createRoot(container);
+      function Header({ author }) {
+        return <h1>Belajar React Bareng {author ? author : "RanFeb"} 🚀</h1>;
+      }
+
+      function Button({ text, onClick, counter }) {
+        let myStyle =
+          text != "Reset!"
+            ? {}
+            : {
+                margin: 20,
+                display: "block",
+                pointerEvents: "none",
+                opacity: 0.5,
+              };
+        if (counter == "Done!") {
+          myStyle =
+            text != "Reset!"
+              ? {}
+              : {
+                  margin: 20,
+                  display: "block",
+                };
+        }
+        return (
+          <button onClick={onClick} style={myStyle}>
+            {text}
+          </button>
+        );
+      }
+
+      function Counter({ counter }) {
+        return <span style={{ margin: 20 }}>{counter}</span>;
+      }
+
+      function HomePage() {
+        const [counter, setCounter] = React.useState(0);
+
+        function handleClickAdd() {
+          if (counter < 10) {
+            setCounter(counter + 1);
+          } else {
+            setCounter("Done!");
+          }
+        }
+
+        function handleClickMin() {
+          if (counter > 0) {
+            setCounter(counter - 1);
+          } else {
+            setCounter("Done!");
+          }
+        }
+
+        function handleClickReset() {
+          setCounter(0);
+        }
+
+        return (
+          <div>
+            <Header author="Rumzi" />
+            <Button text="-" onClick={handleClickMin} counter={counter} />
+            <Counter counter={counter} />
+            <Button text="+" onClick={handleClickAdd} counter={counter} />
+            <Button
+              text="Reset!"
+              onClick={handleClickReset}
+              counter={counter}
+            />
+          </div>
+        );
+      }
+      root.render(<HomePage />);
+    </script>
+  </body>
+</html>
