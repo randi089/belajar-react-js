@@ -1,6 +1,6 @@
+import { useImmerReducer } from "use-immer";
 import NoteForm from "./NoteForm";
 import NodeList from "./NoteList";
-import { useImmer } from "use-immer";
 
 let id = 0;
 const initialNotes = [
@@ -26,30 +26,43 @@ const initialNotes = [
   },
 ];
 
+function notesReducer(draft, action) {
+  if (action.type === "ADD_NOTE") {
+    draft.push({
+      id: id++,
+      text: action.text,
+      done: false,
+    });
+  } else if (action.type === "CHANGE_NOTE") {
+    const index = draft.findIndex((note) => note.id === action.id);
+    draft[index] = { ...action };
+  } else if (action.type === "DELETE_NOTE") {
+    const index = draft.findIndex((note) => note.id === action.id);
+    draft[index].splice(index, 1);
+  }
+}
+
 export default function NoteApp() {
-  const [notes, setNotes] = useImmer(initialNotes);
+  const [notes, dispatch] = useImmerReducer(notesReducer, initialNotes);
 
   function handleAddNote(text) {
-    setNotes((draft) => {
-      draft.push({
-        id: id++,
-        text: text,
-        done: false,
-      });
+    dispatch({
+      type: "ADD_NOTE",
+      text: text,
     });
   }
 
   function handleChangeNote(note) {
-    setNotes((draft) => {
-      const index = draft.findIndex((item) => item.id === note.id);
-      draft[index] = note;
+    dispatch({
+      ...note,
+      type: "CHANGE_NOTE",
     });
   }
 
   function handleDeleteNote(note) {
-    setNotes((draft) => {
-      const index = draft.findIndex((item) => item.id === note.id);
-      draft.splice(index, 1);
+    dispatch({
+      type: "DELETE_NOTE",
+      id: note.id,
     });
   }
   return (
